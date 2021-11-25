@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { SpreadStyled } from './spread.styled'
-import { IOrder } from '../../../app/app.component'
+import { IOrder } from '../../orderbook.component'
 
 interface ISpread {
   value: number
@@ -16,7 +16,7 @@ export const Spread: React.FC<ISpreadProps> = ({ buy, sell }) => {
   const [spread, setSpread] = useState<ISpread>({ value: 0, percent: 0 })
 
   useEffect(() => {
-    const value = sell.price - buy.price
+    const value = parseFloat((sell.price - buy.price).toFixed(2))
     const percent = parseFloat(((value / sell.price) * 100).toFixed(2))
 
     setSpread({

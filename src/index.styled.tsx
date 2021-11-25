@@ -10,5 +10,11 @@ export const globalStyles = css`
 
     background: rgb(19, 23, 35);
     color: rgb(152, 156, 163);
+
+    height: 100vh;
+  }
+
+  #root {
+    height: 100%;
   }
 `

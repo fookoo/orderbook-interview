@@ -1,28 +1,42 @@
-import React, { useEffect } from 'react'
+import React from 'react'
+import { useOrdersFeed } from '../../hooks/use-orders-feed/use-orders-feed.hook'
+import { Header } from './components/header/header.component'
 import { List } from './components/list/list.component'
-import { Spread } from './components/spread/spread.component'
-import { OrdersContainerStyled } from './orderbook.styled'
-import { IOrders } from '../app/app.component'
+import { ColumnsStyled, OrdersContainerStyled } from './orderbook.styled'
+import { AvailableProducts } from '../product-selector/product-selector.component'
 
 export type Side = 'sell' | 'buy'
 
-export type AvailableProducts = 'PI_XBTUSD'
-
-export interface IOrderbookProps {
-  orders: IOrders
+export interface IOrder {
+  id?: number
+  price: number
+  size: number
+  total: number
 }
 
-export const Orderbook: React.FC<IOrderbookProps> = ({ orders }) => {
+export interface IOrders {
+  asks: IOrder[]
+  bids: IOrder[]
+  ask_volume: number
+  bid_volume: number
+}
+
+export interface IOrderbookProps {
+  product: AvailableProducts
+  size?: number
+}
+
+export const Orderbook: React.FC<IOrderbookProps> = ({ product, size = 20 }) => {
+  const { orders } = useOrdersFeed(product, size)
+
   return (
-    <div>
-      <div>
-        Order Book
-        {orders.asks[0] && orders.bids[0] && <Spread buy={orders.bids[0]} sell={orders.asks[0]} />}
-      </div>
-      <OrdersContainerStyled>
+    <OrdersContainerStyled>
+      <Header buy={orders.bids[0]} sell={orders.asks[0]} />
+      <ColumnsStyled>
+        <Header buy={orders.bids[0]} sell={orders.asks[0]} />
         <List quantity={orders.bid_volume} orders={orders.bids} side={'buy'} />
         <List quantity={orders.ask_volume} orders={orders.asks} side={'sell'} reverse />
-      </OrdersContainerStyled>
-    </div>
+      </ColumnsStyled>
+    </OrdersContainerStyled>
   )
 }

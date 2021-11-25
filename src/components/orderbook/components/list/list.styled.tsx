@@ -12,19 +12,42 @@ interface IReverse {
 
 export const ListStyled = styled.div`
   width: 100%;
+
+  @media screen and (max-width: 700px) {
+    display: flex;
+    flex-direction: column-reverse;
+  }
 `
 
 const Columns = (reverse = false) => css`
-  display: grid;
-  width: 100%;
+  display: flex;
 
-  grid-template-columns: 1fr 1fr 1fr;
-  ${reverse ? `direction: ltr;` : `direction: rtl;`}
-  text-align: right;
+  justify-content: space-between;
+  z-index: 2;
+
+  @media screen and (max-width: 700px) {
+    flex-direction: row-reverse;
+  }
+
+  @media screen and (min-width: 701px) {
+    ${reverse ? 'flex-direction: row-reverse;' : 'flex-direction: row;'}
+  }
+
+  div {
+    @media screen and (min-width: 701px) {
+      ${reverse ? 'text-align: left;' : 'text-align: right;'}
+    }
+
+    width: 33%;
+    padding: 0 5px;
+  }
 `
 
 export const HeaderStyled = styled.div<IReverse>`
-  ${({ reverse }) => Columns(reverse)};
+  @media screen and (max-width: 700px) {
+    display: none;
+  }
+  ${({ reverse }) => Columns(reverse)}
 
   text-transform: uppercase;
   color: rgb(56, 61, 74);
@@ -37,31 +60,21 @@ export const HeaderStyled = styled.div<IReverse>`
 
 export const RowStyled = styled.div<IReverse>`
   position: relative;
+  height: 20px;
 
-  & > div {
-    div {
-      z-index: 1;
-    }
-    ${({ reverse }) => Columns(reverse)};
+  .columns {
+    ${({ reverse }) => Columns(reverse)}
+    position: relative;
+  }
 
-    .price {
-      ${({ side }) => `color: ${side === 'buy' ? green : red};`}
+  .price {
+    ${({ side }) => `color: ${side === 'buy' ? green : red};`}
+  }
+
+  .bar {
+    @media screen and (max-width: 700px) {
+      left: 0 !important;
+      right: unset !important;
     }
   }
-`
-
-interface IBarStyledProps {
-  value: number
-  reverse: boolean
-  side: Side
-}
-
-export const BarStyled = styled.span<IBarStyledProps>`
-  position: absolute;
-
-  z-index: 0;
-  height: 100%;
-  ${({ value }) => `width: ${value}%;`}
-  ${({ reverse }) => (reverse ? 'left: 0;' : 'right: 0;')}
-  ${({ side }) => `background: ${side === 'sell' ? 'rgb(61,30,40)' : 'rgb(18,53,52)'};`}
 `
